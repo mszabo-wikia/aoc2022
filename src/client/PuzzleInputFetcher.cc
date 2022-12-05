@@ -3,6 +3,7 @@
 #include <curl/curl.h>
 #include <curl/easy.h>
 
+#include <cstdio>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
@@ -39,16 +40,16 @@ std::unique_ptr<std::istream> PuzzleInputFetcher::FetchInput(int day) {
     throw InputFetcherError("must provide AOC_SESSION_TOKEN");
   }
 
-  std::ostringstream url;
-  url << "https://adventofcode.com/2022/day/" << day << "/input";
+  char url[43];
+  snprintf(url, sizeof(url), "https://adventofcode.com/2022/day/%d/input", day);
 
-  std::ostringstream cookie;
-  cookie << "session=" << token;
+  char cookie[137];
+  snprintf(cookie, sizeof(cookie), "session=%s", token);
 
   buffer.clear();
 
-  curl_easy_setopt(curl, CURLOPT_URL, url.str().c_str());
-  curl_easy_setopt(curl, CURLOPT_COOKIE, cookie.str().c_str());
+  curl_easy_setopt(curl, CURLOPT_URL, url);
+  curl_easy_setopt(curl, CURLOPT_COOKIE, cookie);
   curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION,
                    &PuzzleInputFetcher::write_callback);
@@ -64,8 +65,10 @@ std::unique_ptr<std::istream> PuzzleInputFetcher::FetchInput(int day) {
     throw InputFetcherError(curl_easy_strerror(res));
   }
   if (status != 200) {
-    throw InputFetcherError(
-        ("got non-successful status: " + std::to_string(status)).c_str());
+    char status_error[31];
+    snprintf(status_error, sizeof(status_error),
+             "got non-successful status: %ld", status);
+    throw InputFetcherError(status_error);
   }
 
   std::ofstream cache_file_writer(cache_file_name);
