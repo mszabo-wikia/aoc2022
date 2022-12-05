@@ -56,14 +56,14 @@ int Shape::innateScore() const noexcept {
 
 int Shape::scoreAgainst(Shape other) const noexcept {
   if (type_ == other.type_) {
-    return DRAW_SCORE;
+    return kDrawScore;
   }
 
   if (defeatsType_ == other.type_) {
-    return WIN_SCORE;
+    return kWinScore;
   }
 
-  return LOSS_SCORE;
+  return kLossScore;
 }
 
 }  // namespace day02

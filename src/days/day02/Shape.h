@@ -21,9 +21,9 @@ class Shape {
   int scoreAgainst(Shape other) const noexcept;
 
  private:
-  constexpr static int WIN_SCORE = 6;
-  constexpr static int LOSS_SCORE = 0;
-  constexpr static int DRAW_SCORE = 3;
+  constexpr static int kWinScore = 6;
+  constexpr static int kLossScore = 0;
+  constexpr static int kDrawScore = 3;
 
   explicit Shape(Type type) noexcept;
 
